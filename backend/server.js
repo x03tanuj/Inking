@@ -4,8 +4,11 @@ dotenv.config();
 import express from "express";
 const app = express();
 
-// Middleware
+// Middleware - MUST be before routes
 app.use(express.json());
+
+import authRoutes from "./routes/authRoutes.js";
+app.use("/api/auth", authRoutes);
 
 const port = process.env.PORT;
 

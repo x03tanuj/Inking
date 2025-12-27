@@ -1,4 +1,4 @@
-import asyncHandler from "../middlewares/asyncHandler.js";
+import asyncHandler from "../middleware/asyncHandler.js";
 import Note from "../models/Notes.js";
 
 // Create Note

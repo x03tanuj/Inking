@@ -34,3 +34,10 @@ coverage/
 # Misc
 .DS_Store
 .env.local
+
+# Frontend specific
+frontend/node_modules/
+frontend/.env
+frontend/.env.local
+frontend/dist/
+frontend/build/

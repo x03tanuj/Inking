@@ -1,5 +1,5 @@
 import express from "express";
-import validateObjectId from "../middlewares/validateObjectId.js";
+import validateObjectId from "../middleware/validateObjectId.js";
 import {
   createNote,
   allNotes,
