@@ -4,14 +4,15 @@ import Note from "../models/Notes.js";
 // Create Note
 export const createNote = asyncHandler(async (req, res) => {
   const { title, content } = req.body;
-  if (!title || !content) {
+  if (!title) {
     res.status(400);
-    throw new Error("Title and content are required");
+    throw new Error("Title is required");
   }
 
   const note = await Note.create({
     title,
-    content,
+    content: content || "",
+    user: req.user._id,
   });
   res.status(201).json({
     success: true,
@@ -20,7 +21,7 @@ export const createNote = asyncHandler(async (req, res) => {
 });
 
 export const allNotes = asyncHandler(async (req, res) => {
-  const notes = await Note.find().sort({ createdAt: -1 });
+  const notes = await Note.find({ user: req.user._id }).sort({ createdAt: -1 });
   res.status(200).json({
     success: true,
     count: notes.length,
@@ -30,7 +31,10 @@ export const allNotes = asyncHandler(async (req, res) => {
 
 // Delete route
 export const deleteNote = asyncHandler(async (req, res) => {
-  const note = await Note.findByIdAndDelete(req.params.id);
+  const note = await Note.findOneAndDelete({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (!note) {
     res.status(404);
@@ -44,10 +48,14 @@ export const deleteNote = asyncHandler(async (req, res) => {
 });
 
 export const updateNote = asyncHandler(async (req, res) => {
-  const note = await Note.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  const note = await Note.findOneAndUpdate(
+    { _id: req.params.id, user: req.user._id },
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
   if (!note) {
     res.status(404);
     throw new Error("Note not found");
@@ -60,7 +68,10 @@ export const updateNote = asyncHandler(async (req, res) => {
 });
 
 export const getNote = asyncHandler(async (req, res) => {
-  const note = await Note.findById(req.params.id);
+  const note = await Note.findOne({
+    _id: req.params.id,
+    user: req.user._id,
+  });
   if (!note) {
     res.status(404);
     throw new Error("Note not found");
